@@ -14,7 +14,7 @@ public class MessageDigestUtil {
     static private int BUFSIZE = 1024;
     
     private MessageDigest md;
-    private byte[] buf;
+    private int bufsize;
     
     static public MessageDigestUtil getInstance(String algorithm) throws NoSuchAlgorithmException {
         return getInstance(algorithm, BUFSIZE);
@@ -23,8 +23,12 @@ public class MessageDigestUtil {
     static public MessageDigestUtil getInstance(String algorithm, int bufSize) throws NoSuchAlgorithmException {
         MessageDigestUtil hash = new MessageDigestUtil();
         hash.md = MessageDigest.getInstance(algorithm);
-        hash.buf = new byte[bufSize];
+        hash.bufsize = bufSize;
         return hash;
+    }
+    
+    static public String digest(String algorithm, File file) throws NoSuchAlgorithmException, IOException {
+        return MessageDigestUtil.getInstance(algorithm).digest(file);
     }
     
     private MessageDigestUtil() {
@@ -42,6 +46,7 @@ public class MessageDigestUtil {
     }
     
     private byte[] digest_(InputStream in) throws IOException {
+        byte[] buf = new byte[bufsize];
         while (true) {
             int len = in.read(buf);
             if (len == -1) {
